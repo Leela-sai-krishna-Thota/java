@@ -547,83 +547,39 @@ class GfG {
 }
 
 
-
-
-//FCFS
-
-#include<stdio.h> main()
-{
-int bt[20], wt[20], tat[20], i, n; float wtavg, tatavg;
-printf("\nEnter the number of processes -- "); scanf("%d", &n);
-for(i=0;i<n;i++)
-{
-printf("\nEnter Burst Time for Process %d -- ", i); scanf("%d", &bt[i]);
-}
-wt[0] = wtavg = 0; tat[0] = tatavg = bt[0]; for(i=1;i<n;i++)
-{
-wt[i] = wt[i-1] +bt[i-1];
-tat[i] = tat[i-1] +bt[i]; wtavg = wtavg + wt[i]; tatavg = tatavg + tat[i];
-}
- 
-printf("\t PROCESS \tBURST TIME \t WAITING TIME\t TURNAROUND TIME\n");
-for(i=0;i<n;i++)
-printf("\n\t P%d \t\t %d \t\t %d \t\t %d", i, bt[i], wt[i], tat[i]); printf("\nAverage Waiting Time -- %f", wtavg/n); printf("\nAverage Turnaround Time -- %f", tatavg/n);
-}
-
-job schedule
+//dikstra
 import java.util.*;
 
-class GfG {
-
-    static ArrayList<Integer> jobSequencing(int[] id, 
-            int[] deadline, int[] profit) {
-        int n = id.length;
-        ArrayList<Integer> ans = new ArrayList<>(Arrays.asList(0, 0));
-
-        // pair the profit and deadline of
-        // all the jobs together
-        ArrayList<int[]> jobs = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            jobs.add(new int[]{profit[i], deadline[i]});
-        }
-
-        // sort the jobs based on profit
-        // in decreasing order
-        jobs.sort((a, b) -> b[0] - a[0]);
-
-        // array to store result of job sequence
-        int[] result = new int[n];
-        Arrays.fill(result, -1);
+class Dijkstra {
+    static void dijkstra(int[][] g, int src, int n) {
+        int[] d = new int[n]; 
+        boolean[] v = new boolean[n];
+        Arrays.fill(d, Integer.MAX_VALUE);
+        d[src] = 0;
 
         for (int i = 0; i < n; i++) {
-            int start = Math.min(n, jobs.get(i)[1]) - 1;
-            for (int j = start; j >= 0; j--) {
+            int u = -1;
+            for (int j = 0; j < n; j++) 
+                if (!v[j] && (u == -1 || d[j] < d[u])) u = j;
+            
+            if (d[u] == Integer.MAX_VALUE) break;
+            v[u] = true;
 
-                // if slot is empty
-                if (result[j] == -1) {
-                    result[j] = i;
-                    break;
-                }
-            }
+            for (int j = 0; j < n; j++) 
+                if (!v[j] && g[u][j] > 0 && d[u] + g[u][j] < d[j]) 
+                    d[j] = d[u] + g[u][j];
         }
 
-        for (int i = 0; i < n; i++) {
-            if (result[i] != -1) {
-                ans.set(1, ans.get(1) + jobs.get(result[i])[0]);
-                ans.set(0, ans.get(0) + 1);
-            }
-        }
-
-        return ans;
+        for (int i = 0; i < n; i++) 
+            System.out.println(i + " -> " + (d[i] == Integer.MAX_VALUE ? "INF" : d[i]));
     }
 
     public static void main(String[] args) {
-        int[] id = {1, 2, 3, 4, 5};
-        int[] deadline = {2, 1, 2, 1, 1};
-        int[] profit = {100, 19, 27, 25, 15};
-        ArrayList<Integer> ans = jobSequencing(id, deadline, profit);
-        System.out.println(ans.get(0) + " " + ans.get(1));
+        int[][] g = {{0, 10, 20, 0, 0}, {10, 0, 5, 15, 0}, {20, 5, 0, 30, 10}, {0, 15, 30, 0, 5}, {0, 0, 10, 5, 0}};
+        dijkstra(g, 0, g.length);
     }
 }
-    
+
+
+
 
